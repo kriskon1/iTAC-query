@@ -10,7 +10,6 @@ def main():
         history = ac.trGetSerialNumberHistoryData(session, stationnumber, serialnumbers)
         # print(history)
         filtered = filter.history(history)
-        # lock = ac.lockUnlockObjects(session, stationnumber, serialnumbers)
         print(filtered)
     else:
         print("Login failed. No session received.")

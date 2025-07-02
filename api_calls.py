@@ -22,15 +22,13 @@ def login(username, password):
             "password": password,
             "client": "01",
             "registrationType": "U",  # U = User login, S = Station login
-            "systemIdentifier": "http://ves1-itacv2-02.vnet.valeo.com:8080"
+            "systemIdentifier": "http://...com:8080"
         }
     }
 
-    # Send the request
     headers = {"Content-Type": "application/json"}
     response = requests.post(f"{SERVER_URL}/regLogin", data=json.dumps(login_data), headers=headers)
 
-    # Handle response
     if response.status_code == 200:
         session_info = response.json()
         session_context = session_info.get("result", {}).get("sessionContext", {})
@@ -66,7 +64,7 @@ def logout(session):
 
 def trGetSerialNumberHistoryData(session, station, serialnumbers):
     results = {}
-    asd = len(serialnumbers)
+    count = len(serialnumbers)
     for serial in serialnumbers:
         payload = {
             "sessionContext": {
@@ -89,103 +87,13 @@ def trGetSerialNumberHistoryData(session, station, serialnumbers):
 
         response = requests.post(f"{SERVER_URL}/trGetSerialNumberHistoryData", json=payload)
 
-        # 🔹 Handle the response
         if response.status_code == 200:
             results[serial] = response.json()
             # print("Serial Number History Data:", results[serial])
         else:
             results[serial] = f"Error {response.status_code}: {response.text}"
             print(f"Error: {response.status_code}, {response.text}")
-        print(serial, ": Done!",asd, "serial numbers left!")
-        asd = asd - 1
-
-    return results
-
-def lockObjects(session, station, serialnumbers):
-    results = {}
-
-    for serial in serialnumbers:
-        payload = {
-            "sessionContext": {
-                "sessionId": session[0],
-                "persId": session[1],
-                "locale": session[2]
-            },
-            "stationNumber": station,
-            "objectType": 0,
-            "lockGroupName": "Test",
-            "lockInformation": "Reason for blocking",
-            "lockDate": -1,
-            "lockDependencies": 0,
-            "objectUploadKeys": ["ERROR_CODE","SERIAL_NUMBER"],
-            "objectUploadValues": [0, serial]
-        }
-
-        response = requests.post(f"{SERVER_URL}/lockObjects", json=payload)
-
-        if response.status_code == 200:
-            results[serial] = response.json()
-        else:
-            results[serial] = f"Error: {response.status_code}: {response.text}"
-
-    return results
-
-def lockUnlockObjects(session, station, serialnumbers):
-    results = {}
-
-    for serial in serialnumbers:
-        payload = {
-            "sessionContext": {
-                "sessionId": session[0],
-                "persId": session[1],
-                "locale": session[2]
-            },
-            "stationNumber": station,
-            "objectType": 0,
-            "lockGroupName": -1,
-            "unlockInformation": "Reason for unblocking",
-            "unlockCompleteGroup": 0,
-            "unlockDate": -1,
-            "lockDependencies": 0,
-            "objectUploadKeys": ["ERROR_CODE","SERIAL_NUMBER"],
-            "objectUploadValues": [0, serial]
-        }
-
-        response = requests.post(f"{SERVER_URL}/lockUnlockObjects", json=payload)
-
-        if response.status_code == 200:
-            results[serial] = response.json()
-        else:
-            results[serial] = f"Error: {response.status_code}: {response.text}"
-
-    return results
-
-
-def lockGetLockedObjects(session, station, serialnumbers):
-    results = {}
-
-    for serial in serialnumbers:
-        payload = {
-            "sessionContext": {
-                "sessionId": session[0],
-                "persId": session[1],
-                "locale": session[2]
-            },
-            "stationNumber": station,
-            "objectType": 0,
-            "lockGroupName": "Test",
-            "lockInformation": "Reason for blocking",
-            "lockDate": -1,
-            "lockDependencies": 0,
-            "objectUploadKeys": ["ERROR_CODE","SERIAL_NUMBER"],
-            "objectUploadValues": [0, serial]
-        }
-
-        response = requests.post(f"{SERVER_URL}/lockObjects", json=payload)
-
-        if response.status_code == 200:
-            results[serial] = response.json()
-        else:
-            results[serial] = f"Error: {response.status_code}: {response.text}"
+        print(serial, ": Done! ",count, "serial numbers left!")
+        count = count - 1
 
     return results

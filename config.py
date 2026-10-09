@@ -1,5 +1,5 @@
-USERNAME = "KRISKON"
-PASSWORD = "PASSWORD"
+USERNAME = "xxx"
+PASSWORD = "yyy"
 # SERVER_URL = "http://ves1-itacv2-02.vnet.valeo.com:8080/mes/imsapi/rest/actions"
 SERVER_URL = "http://10.207.63.180:8080/mes/imsapi/rest/actions"
 
